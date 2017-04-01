@@ -4,6 +4,7 @@ import UIKit
 
 var view = MetaballView2D(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
 var system = view.system
+system.resolution = 1 / 5
 
 // Generate random balls
 for _ in 0..<10 {
@@ -21,6 +22,9 @@ for _ in 0..<10 {
 // Set a block for what to draw
 view.drawBlock = { view, context in
     context.setLineWidth(1)
+    
+    context.setFillColor(UIColor.darkGray.cgColor)
+    view.drawGrid(context: context)
     
     context.setStrokeColor(UIColor.cyan.cgColor)
     view.drawCircles(context: context)

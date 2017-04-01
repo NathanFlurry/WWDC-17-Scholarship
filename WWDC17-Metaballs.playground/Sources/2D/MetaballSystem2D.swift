@@ -79,17 +79,8 @@ let classificationToPolyCorners = [
     []
 ]
 
-func lerp(_ x0: CGFloat, _ x1: CGFloat, _ y0: CGFloat, _ y1: CGFloat, _ x: CGFloat) -> CGFloat {
-    if x0 == x1 {
-        print("x0 == x1")
-        return 0
-    }
-    
-    return y0 + (y1 - y0) * (x - x0) / (x1 - x0);
-}
-
 // Used at each point
-class GridSample {
+public class GridSample {
     // What the value is
     var sample: CGFloat = 0
     var aboveThreshold: Bool = false
@@ -134,7 +125,7 @@ public class MetaballSystem2D {
     public var threshold: CGFloat = 1
     
     // State
-    private var samples: [GridSample] = []
+    public private(set) var samples: [GridSample] = []
     
     init() {
         generateGrid()
@@ -237,10 +228,10 @@ public class MetaballSystem2D {
             let SE = sampleAt(row: row+1, col: col+1).sample
             
             // Get the offset from top or left that the line intersection should be.
-            let N = (classification & 4) == (classification & 8) ? 0.5 : lerp(NW, NE, 0, 1, threshold)
-            let E = (classification & 2) == (classification & 4) ? 0.5 : lerp(NE, SE, 0, 1, threshold)
-            let S = (classification & 1) == (classification & 2) ? 0.5 : lerp(SW, SE, 0, 1, threshold)
-            let W = (classification & 1) == (classification & 8) ? 0.5 : lerp(NW, SW, 0, 1, threshold)
+            let N = (classification & 4) == (classification & 8) ? 0.5 : CGFloat.lerp(NW, NE, 0, 1, threshold)
+            let E = (classification & 2) == (classification & 4) ? 0.5 : CGFloat.lerp(NE, SE, 0, 1, threshold)
+            let S = (classification & 1) == (classification & 2) ? 0.5 : CGFloat.lerp(SW, SE, 0, 1, threshold)
+            let W = (classification & 1) == (classification & 8) ? 0.5 : CGFloat.lerp(NW, SW, 0, 1, threshold)
             
             // Construct the points
             let cgRow = CGFloat(row)
@@ -413,17 +404,17 @@ public class MetaballSystem2D {
     }
     
     // Get a sample at an index
-    private func sampleAt(row: Int, col: Int) -> GridSample {
+    public func sampleAt(row: Int, col: Int) -> GridSample {
         return samples[row * cols + col]
     }
     
     // Get the column and row for index
-    private func columnAndRow(forIndex i: Int) -> Index {
+    public func columnAndRow(forIndex i: Int) -> Index {
         return (i % rows, i / rows)
     }
     
     // Get the point for an index
-    private func point(forIndex i: Int) -> CGPoint {
+    public func point(forIndex i: Int) -> CGPoint {
         let (col, row) = columnAndRow(forIndex: i)
         return CGPoint(
             x: CGFloat(row) / resolution,

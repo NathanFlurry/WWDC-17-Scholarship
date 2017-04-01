@@ -21,6 +21,10 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
             return
         }
         
+        // Do the calculations required for everything else
+        system.calculateSamples()
+        system.calculateClassifications()
+        
         // Draw the rest
         drawBlock?(self, context)
     }
@@ -40,8 +44,23 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
 //        ("Hello, world" as NSString).draw(at: <#T##CGPoint#>, withAttributes: <#T##[String : Any]?#>) // http://stackoverflow.com/questions/7251065/iphone-draw-white-text-on-black-view-using-cgcontext
     }
     
-    public func drawGrid(context: CGContext) { // Use the system's resolution + threshold
+    public func drawGrid(context: CGContext) {
+        // Calculate the size for each cell
+        let width = bounds.width / CGFloat(system.width) / CGFloat(system.resolution)
+        let height = bounds.height / CGFloat(system.height) / CGFloat(system.resolution)
         
+        // Draw a square for each cell
+        for (i, sample) in system.samples.enumerated() {
+            let position = system.point(forIndex: i)
+            if sample.aboveThreshold {
+                context.fill(
+                    CGRect(
+                        x: position.x, y: position.y,
+                        width: width, height: height
+                    )
+                )
+            }
+        }
     }
     
     public func drawPoints(context: CGContext) { // Just like the grid, but the points at every corner
@@ -49,8 +68,6 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
     }
     
     public func drawCells(context: CGContext, interpolate: Bool) { // Draws the metaballs using marching squares
-        system.calculateSamples()
-        system.calculateClassifications()
         let lines = system.calculateLines()
         for line in lines {
             context.strokeLineSegments(between: [line.a, line.b])
