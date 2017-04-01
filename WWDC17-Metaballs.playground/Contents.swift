@@ -1,6 +1,7 @@
 //: Playground - noun: a place where people can play
 
 import UIKit
+import PlaygroundSupport
 
 var view = MetaballView2D(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
 var system = view.system
@@ -21,6 +22,8 @@ for _ in 0..<10 {
 
 // Set a block for what to draw
 view.drawBlock = { view, context in
+    print("Draw")
+    
     context.setLineWidth(1)
     
     context.setFillColor(UIColor.darkGray.cgColor)
@@ -33,11 +36,7 @@ view.drawBlock = { view, context in
     view.drawCells(context: context, interpolate: true)
 }
 
-// Draw the view
+let page = PlaygroundPage.current
+page.needsIndefiniteExecution = true
+page.liveView = view
 view.setNeedsDisplay()
-view
-
-
-
-
-
