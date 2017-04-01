@@ -23,6 +23,9 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
             return
         }
         
+        // Clear the context
+        context.clear(rect)
+        
         // Do the calculations required for everything else
         system.calculateSamples()
         system.calculateClassifications()
@@ -42,31 +45,47 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
         }
     }
     
-    public func drawValues(context: CGContext) {
-//        ("Hello, world" as NSString).draw(at: <#T##CGPoint#>, withAttributes: <#T##[String : Any]?#>) // http://stackoverflow.com/questions/7251065/iphone-draw-white-text-on-black-view-using-cgcontext
+    public func drawPoints(context: CGContext) { // Just like the grid, but the points at every corner
+        // Draw a dot at each point to indicate the sample
+        for (i, sample) in system.samples.enumerated() {
+            let position = system.point(forIndex: i)
+            if sample.aboveThreshold {
+                context.fillEllipse(in: CGRect(x: position.x - 1, y: position.y - 1, width: 1, height: 1))
+            }
+        }
     }
     
-    public func drawGrid(context: CGContext) {
+    public func drawValues(context: CGContext) {
+        //        ("Hello, world" as NSString).draw(at: <#T##CGPoint#>, withAttributes: <#T##[String : Any]?#>) // http://stackoverflow.com/questions/7251065/iphone-draw-white-text-on-black-view-using-cgcontext
+        
+        
+    }
+    
+    public func drawGrid(context: CGContext, useAlpha: Bool, alphaAttack attack: CGFloat = 2) {
         // Calculate the size for each cell
         let width = bounds.width / CGFloat(system.width) / CGFloat(system.resolution)
         let height = bounds.height / CGFloat(system.height) / CGFloat(system.resolution)
         
         // Draw a square for each cell
+        context.saveGState()
         for (i, sample) in system.samples.enumerated() {
             let position = system.point(forIndex: i)
-            if sample.aboveThreshold {
-                context.fill(
-                    CGRect(
-                        x: position.x, y: position.y,
-                        width: width, height: height
-                    )
-                )
+            let rect = CGRect(
+                x: position.x, y: position.y,
+                width: width, height: height
+            )
+            
+            // Set alpha either as a varying value or threshold
+            if useAlpha {
+                context.setAlpha(pow(sample.sample / system.threshold, attack))
+            } else {
+                context.setAlpha(sample.aboveThreshold ? 1 : 0)
             }
+            
+            // Fill the rect
+            context.fill(rect)
         }
-    }
-    
-    public func drawPoints(context: CGContext) { // Just like the grid, but the points at every corner
-        
+        context.restoreGState()
     }
     
     public func drawCells(context: CGContext, interpolate: Bool) { // Draws the metaballs using marching squares

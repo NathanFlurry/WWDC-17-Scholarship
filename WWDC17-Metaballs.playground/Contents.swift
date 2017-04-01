@@ -22,12 +22,11 @@ for _ in 0..<10 {
 
 // Set a block for what to draw
 view.drawBlock = { view, context in
-    context.clear(view.bounds)
     
     context.setLineWidth(1)
     
     context.setFillColor(UIColor.darkGray.cgColor)
-    view.drawGrid(context: context)
+    view.drawGrid(context: context, useAlpha: true, alphaAttack: 1.5)
     
     context.setStrokeColor(UIColor.cyan.cgColor)
     view.drawCircles(context: context)
