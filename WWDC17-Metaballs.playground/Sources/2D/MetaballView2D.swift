@@ -58,10 +58,15 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
     public func drawValues(context: CGContext) {
         //        ("Hello, world" as NSString).draw(at: <#T##CGPoint#>, withAttributes: <#T##[String : Any]?#>) // http://stackoverflow.com/questions/7251065/iphone-draw-white-text-on-black-view-using-cgcontext
         
-        
+        // Draw text at every sample
+        for (i, sample) in system.samples.enumerated() {
+            let position = system.point(forIndex: i)
+            
+            ("Hi" as NSString).draw(at: position, withAttributes: nil)
+        }
     }
     
-    public func drawGrid(context: CGContext, useAlpha: Bool, alphaAttack attack: CGFloat = 2) {
+    public func drawGrid(context: CGContext, useAlpha: Bool, alphaAttack attack: CGFloat = 1) {
         // Calculate the size for each cell
         let width = bounds.width / CGFloat(system.width) / CGFloat(system.resolution)
         let height = bounds.height / CGFloat(system.height) / CGFloat(system.resolution)
@@ -71,7 +76,7 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
         for (i, sample) in system.samples.enumerated() {
             let position = system.point(forIndex: i)
             let rect = CGRect(
-                x: position.x, y: position.y,
+                x: position.x - width / 2, y: position.y - height / 2,
                 width: width, height: height
             )
             
