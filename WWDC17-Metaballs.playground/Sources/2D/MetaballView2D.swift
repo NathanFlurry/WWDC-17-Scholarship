@@ -6,6 +6,7 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
     public let system: MetaballSystem2D = MetaballSystem2D()
     public var drawBlock: DrawBlock?
     
+    // MARK: View lifecycle
     override public func layoutSubviews() {
         super.layoutSubviews()
         
@@ -14,6 +15,7 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
         system.height = Int(bounds.height)
     }
     
+    // MARK: Drawing
     override public func draw(_ rect: CGRect) {
         // Get the current context
         guard let context = UIGraphicsGetCurrentContext() else {
@@ -72,5 +74,69 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
         for line in lines {
             context.strokeLineSegments(between: [line.a, line.b])
         }
+    }
+    
+    // MARK: Interaction
+    var touchStates = [UITouch: Int]() // [Touch: Ball index]
+    
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            let location = touch.location(in: self)
+            
+            // Find the ball that was touched
+            var ballIndex = -1
+            for (i, ball) in system.balls.enumerated() {
+                if sqrt(pow(ball.position.x - location.x, 2) + pow(ball.position.y - location.y, 2)) < ball.radius {
+                    ballIndex = i
+                    break
+                }
+            }
+            
+            // If no ball, create new ball
+            if ballIndex == -1 {
+                let ball = Metaball2D(position: location, radius: 15) // TODO: Use callback to create a ball
+                system.balls.append(ball)
+                ballIndex = system.balls.count - 1
+            }
+            
+            if touch.tapCount >= 2 {
+                // Delete the ball
+                touchStates[touch] = nil
+                system.balls.remove(at: ballIndex)
+            } else {
+                // Set the ball index being tapped
+                touchStates[touch] = ballIndex
+            }
+        }
+        
+        setNeedsDisplay()
+    }
+    
+    public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            let location = touch.location(in: self)
+            
+            if let ballIndex = touchStates[touch] {
+                system.balls[ballIndex].position = location
+            }
+        }
+        
+        setNeedsDisplay()
+    }
+    
+    public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            touchStates[touch] = nil
+        }
+        
+        setNeedsDisplay()
+    }
+    
+    public override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            touchStates[touch] = nil
+        }
+        
+        setNeedsDisplay()
     }
 }

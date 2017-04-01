@@ -22,7 +22,7 @@ for _ in 0..<10 {
 
 // Set a block for what to draw
 view.drawBlock = { view, context in
-    print("Draw")
+    context.clear(view.bounds)
     
     context.setLineWidth(1)
     
