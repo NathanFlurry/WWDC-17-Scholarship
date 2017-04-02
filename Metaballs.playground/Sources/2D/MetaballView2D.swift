@@ -63,7 +63,12 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
         for (i, sample) in system.samples.enumerated() {
             let position = system.point(forIndex: i)
             if sample.aboveThreshold {
-                context.fillEllipse(in: CGRect(x: position.x - 1, y: position.y - 1, width: 1, height: 1))
+                context.fill(
+                    CGRect(
+                        x: position.x - 1, y: position.y - 1,
+                        width: 10, height: 10
+                    )
+                )
             }
         }
     }
@@ -79,7 +84,7 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
         }
     }
     
-    public func drawGrid(context: CGContext, useAlpha: Bool, alphaAttack attack: CGFloat = 1) {
+    public func drawGrid(context: CGContext, padding: CGFloat = 0, useAlpha: Bool = false, alphaAttack attack: CGFloat = 1) {
         // Calculate the size for each cell
         let width = bounds.width / CGFloat(system.width) / CGFloat(system.resolution)
         let height = bounds.height / CGFloat(system.height) / CGFloat(system.resolution)
@@ -89,8 +94,8 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
         for (i, sample) in system.samples.enumerated() {
             let position = system.point(forIndex: i)
             let rect = CGRect(
-                x: position.x - width / 2, y: position.y - height / 2,
-                width: width, height: height
+                x: position.x - width / 2 + padding, y: position.y - height / 2 + padding,
+                width: width - padding * 2, height: height - padding * 2
             )
             
             // Set alpha either as a varying value or threshold
@@ -131,7 +136,7 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
             
             // If no ball, create new ball
             if ballIndex == -1 {
-                let ball = Metaball2D(position: location, radius: 15) // TODO: Use callback to create a ball
+                let ball = Metaball2D(position: location, radius: CGFloat.random * 10 + 30)
                 system.balls.append(ball)
                 ballIndex = system.balls.count - 1
             }

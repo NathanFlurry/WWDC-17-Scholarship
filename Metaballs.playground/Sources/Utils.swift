@@ -17,23 +17,24 @@ extension CGFloat {
 }
 
 extension MetaballView2D {
-    public static func generate(resolution: CGFloat = 1 / 4, drawBlock: @escaping MetaballView2D.DrawBlock) {
+    public static func generate(downsample: CGFloat = 4, threshold: CGFloat = 1, drawBlock: @escaping MetaballView2D.DrawBlock) {
         // Create a view
         let view = MetaballView2D(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
         
         // Set up the system
         let system = view.system
-        system.resolution = resolution
+        system.resolution = 1 / downsample
+        system.threshold = threshold
         
         // Generate random balls
-        for _ in 0..<10 {
+        for _ in 0..<6 {
             let ball = Metaball2D(
                 position:
                 CGPoint(
                     x: CGFloat.random * CGFloat(system.width),
                     y: CGFloat.random * CGFloat(system.height)
                 ),
-                radius: 20
+                radius: CGFloat.random * 10 + 30
             )
             system.balls.append(ball)
         }
