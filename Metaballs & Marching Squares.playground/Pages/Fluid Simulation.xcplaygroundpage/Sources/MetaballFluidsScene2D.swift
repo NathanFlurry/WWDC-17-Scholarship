@@ -32,19 +32,6 @@ public class MetaballFluidsScene2D: SKScene {
         waterShape.lineWidth = 0
         waterShape.fillColor = UIColor.blue
         addChild(waterShape)
-        
-        // Add floor
-        let floorSize = CGSize(width: size.width - 8, height: 16)
-        let floor = SKShapeNode(rectOf: floorSize, cornerRadius: 2)
-        floor.position = CGPoint(x: size.width / 2, y: 12)
-        
-        floor.lineWidth = 0
-        floor.fillColor = UIColor.white
-        
-        floor.physicsBody = SKPhysicsBody(rectangleOf: floorSize)
-        floor.physicsBody?.isDynamic = false
-        
-        addChild(floor)
     }
     
     public convenience init(size: CGSize, dropSize: CGFloat) {

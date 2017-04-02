@@ -3,9 +3,20 @@
 /*:
  # Marching Squares
  
- < make sure to talk about interpolation too >
+ The marching squares algorithm is commonly used in computer programs to generate oulines for a given set of samples. In otherwords, given a rough shape in pixels, the marching squares algorithm will generate a smooth outline. Similar to the metaballs algorithm, it works in any number of dimentions, but is easiest to demonstrate in the figure.
  
- ## Instructions
+ The first thing this algorithm does when given a set of samples is classifies each sample based on the values of surrounding samples. These classifications indicate what type of line to draw, wether it's a diagonal line, a horizontal line, etc. here are all 16 classifications for two dimentions:
+ 
+ < image >
+ 
+ Try tapping and dragging the squares on the right to see the way the marching squares algorithm smooths out the shape. Observe how the patterns in the interactive view correspond to the lines in the diagram above.
+ 
+ ---
+ However, when using the metaballs algorithm, a field of scalar samples are created with a value of 0 to 1, depending on how close the surrounding metaballs are. The metaballs algorithm can also use these values in order to morph between different classifications to create even smoother contours. While not demonstrated in the view on the right, this can be seen in any of the other full metaball demonstrations.
+ 
+ ---
+ Read more about the marching squares algorithm [here](https://en.wikipedia.org/wiki/Marching_squares).
+ 
  */
 
 import UIKit

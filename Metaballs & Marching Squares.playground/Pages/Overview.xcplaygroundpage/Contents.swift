@@ -2,16 +2,14 @@
  # Overview
  
  ## What are metaballs?
- ...
- 
- ## What will be covered?
- 
- ## Technologies
+ Metaballs are shapes which are used to create organic-looking simulations. Like many other algorithms, metaballs can be expanded into infinite dimentions; however, for the purpose of simplicity, this playground will simply use 2-dimentional metaballs.
  
  ## Simulation usage
+ Every simulation in this playground is interactive. For the playgrounds demonstrating metaballs, you can interact with it in these ways:
  * Tap to create new metaballs
  * Drag to move metaballs
  * Double tap to remove metaballs
+ 
  */
 
 import UIKit

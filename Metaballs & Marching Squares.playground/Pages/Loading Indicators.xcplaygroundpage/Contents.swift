@@ -1,4 +1,13 @@
 //: [Previous](@previous)
+/*:
+ # Loading Indicators
+ 
+ Metaballs can be used for all sorts of fun demonstrations. For example, you can create really cool look loading indicators, as seen below.
+ 
+ Try swapping the loading styles and modifying properties to see the effect. To go even further, try writing your own; almost anything you make looks cool.
+ 
+ */
+
 
 import UIKit
 
@@ -6,6 +15,10 @@ import UIKit
 enum LoadingStyle {
     case linear(count: Int, spacing: CGFloat), circular(count: Int, radius: CGFloat)
 }
+
+// The loading style used for the view
+//let loadingStyle = LoadingStyle.linear(count: 3, spacing: 60)
+let loadingStyle = LoadingStyle.circular(count: 3, radius: 40)
 
 // Create a view
 let view = MetaballView2D(frame: simulationSize)
@@ -104,8 +117,7 @@ class LoadingController {
 // Set it up
 let controller = LoadingController(
     system: system,
-    style: .linear(count: 3, spacing: 60),
-//    style: .circular(count: 3, radius: 40),
+    style: loadingStyle,
     ballSize: 15,
     speed: 2.5
 )
