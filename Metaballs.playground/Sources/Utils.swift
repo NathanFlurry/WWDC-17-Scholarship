@@ -8,7 +8,7 @@ extension CGFloat {
     
     public static func lerp(_ x0: CGFloat, _ x1: CGFloat, _ y0: CGFloat, _ y1: CGFloat, _ x: CGFloat) -> CGFloat {
         if x0 == x1 {
-            print("x0 == x1")
+//            print("x0 == x1")
             return 0
         }
         
@@ -19,7 +19,7 @@ extension CGFloat {
 extension MetaballView2D {
     public static func generate(downsample: CGFloat = 4, threshold: CGFloat = 1, drawBlock: @escaping MetaballView2D.DrawBlock) {
         // Create a view
-        let view = MetaballView2D(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
+        let view = MetaballView2D(frame: CGRect(x: 0, y: 0, width: 320, height: 320))
         
         // Set up the system
         let system = view.system
@@ -46,5 +46,23 @@ extension MetaballView2D {
         let page = PlaygroundPage.current
         page.needsIndefiniteExecution = true
         page.liveView = view
+    }
+}
+
+extension MarchingSquaresView2D {
+    public static func generate(downsample: CGFloat = 4) {
+        // Create a view
+        let view = MarchingSquaresView2D(frame: CGRect(x: 0, y: 0, width: 320, height: 320))
+        
+        // Set up the system
+        let system = view.system
+        system.resolution = 1 / downsample
+        
+        // Set up the page
+        let page = PlaygroundPage.current
+        page.needsIndefiniteExecution = true
+        page.liveView = view
+        
+        view.setNeedsDisplay()
     }
 }

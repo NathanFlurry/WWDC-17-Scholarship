@@ -3,5 +3,6 @@
     <pages>
         <page name='Overview'/>
         <page name='Sampling'/>
+        <page name='Marching Squares'/>
     </pages>
 </playground>

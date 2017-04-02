@@ -8,16 +8,16 @@
 
 import UIKit
 
-// Create a view; our extension handles the generation of the view, ball generation, and live view setup
+// Create a view
 var view = MetaballView2D.generate(downsample: 16, threshold: 1) { view, context in
     
-    context.setFillColor(UIColor.white.cgColor)
-    view.drawGrid(context: context, useAlpha: true)
+    UIColor.white.setFill()
+    view.drawGrid(context: context, padding: 1, useAlpha: true)
     
-    context.setFillColor(UIColor.green.cgColor)
+    UIColor.green.setFill()
     view.drawGrid(context: context, padding: 4)
     
-    context.setStrokeColor(UIColor.red.cgColor)
-    context.setLineWidth(1)
+    context.setLineWidth(2)
+    UIColor.red.setStroke()
     view.drawCircles(context: context)
 }

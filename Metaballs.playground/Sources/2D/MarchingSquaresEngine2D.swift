@@ -149,7 +149,7 @@ public class MarchingSquaresEngine2D {
     public func calculateSamples() {
         // Calculate if over the threashold
         for sample in samples {
-            sample.aboveThreshold = sample.sample > threshold
+            sample.aboveThreshold = sample.sample >= threshold
         }
     }
     
@@ -376,6 +376,10 @@ public class MarchingSquaresEngine2D {
     // Get a sample at an index
     public func sampleAt(row: Int, col: Int) -> GridSample {
         return samples[row * cols + col]
+    }
+    
+    public func sampleAt(index: Index) -> GridSample {
+        return samples[index.row * cols + index.col]
     }
     
     // Get the column and row for index
