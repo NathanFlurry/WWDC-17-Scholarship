@@ -3,10 +3,10 @@ import CoreGraphics
 
 public class Metaball2D {
     // Where the circle is
-    var position: CGPoint
+    public var position: CGPoint
     
     // Radius of the circle
-    var radius: CGFloat {
+    public var radius: CGFloat {
         didSet {
             // Save the size squared
             radius2 = radius * radius
@@ -14,7 +14,7 @@ public class Metaball2D {
     }
     
     // Util for size ^ 2
-    private(set) var radius2: CGFloat
+    public private(set) var radius2: CGFloat
     
     public init(position: CGPoint, radius: CGFloat) {
         self.position = position

@@ -30,7 +30,7 @@ public func present(view: UIView) {
 
 extension MetaballSystem2D {
     public func generateMetaballs(count: Int, minSize: CGFloat, maxSize: CGFloat) {
-        for _ in 0..<6 {
+        for _ in 0..<count {
             let ball = Metaball2D(
                 position:
                 CGPoint(
