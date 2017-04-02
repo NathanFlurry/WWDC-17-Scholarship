@@ -122,10 +122,8 @@ public class MarchingSquaresEngine2D {
         generateGrid()
     }
     
-    func render() -> CGPath {
+    func renderPath() -> CGPath {
         // Do calculations
-        calculateSamples()
-        calculateClassifications()
         let lines = calculateLines()
         
         // Generate the path

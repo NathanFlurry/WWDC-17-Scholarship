@@ -17,7 +17,7 @@ extension CGFloat {
 }
 
 extension MetaballView2D {
-    public static func generate(downsample: CGFloat = 4, threshold: CGFloat = 1, drawBlock: @escaping MetaballView2D.DrawBlock) {
+    public static func generate(downsample: CGFloat = 4, threshold: CGFloat = 1, drawBlock: @escaping MetaballView2D.DrawBlock) -> (MetaballView2D, MetaballSystem2D) {
         // Create a view
         let view = MetaballView2D(frame: CGRect(x: 0, y: 0, width: 320, height: 320))
         
@@ -46,11 +46,13 @@ extension MetaballView2D {
         let page = PlaygroundPage.current
         page.needsIndefiniteExecution = true
         page.liveView = view
+        
+        return (view, view.system)
     }
 }
 
 extension MarchingSquaresView2D {
-    public static func generate(downsample: CGFloat = 4) {
+    public static func generate(downsample: CGFloat = 4) -> (MarchingSquaresView2D, MarchingSquaresEngine2D) {
         // Create a view
         let view = MarchingSquaresView2D(frame: CGRect(x: 0, y: 0, width: 320, height: 320))
         
@@ -64,5 +66,7 @@ extension MarchingSquaresView2D {
         page.liveView = view
         
         view.setNeedsDisplay()
+        
+        return (view, view.system)
     }
 }

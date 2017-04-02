@@ -116,6 +116,13 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
         }
     }
     
+    public func drawCellsPath(context: CGContext) {
+        let path = system.renderPath()
+        context.addPath(path)
+        context.fillPath()
+        context.strokePath()
+    }
+    
     // MARK: Interaction
     var touchStates = [UITouch: Int]() // [Touch: Ball index]
     

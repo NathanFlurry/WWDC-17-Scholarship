@@ -4,5 +4,8 @@
         <page name='Overview'/>
         <page name='Sampling'/>
         <page name='Marching Squares'/>
+        <page name='Putting Together'/>
+        <page name='Fluid Simulation'/>
+        <page name='Loading Indicators'/>
     </pages>
 </playground>

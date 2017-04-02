@@ -3,7 +3,7 @@
 /*:
  # Marching Squares
  
- 
+ < make sure to talk about interpolation too >
  */
 
 // Create a view
