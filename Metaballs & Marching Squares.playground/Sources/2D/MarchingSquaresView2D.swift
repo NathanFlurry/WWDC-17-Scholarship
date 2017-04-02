@@ -5,23 +5,29 @@ public class MarchingSquaresView2D: UIView {
     
     override public var bounds: CGRect {
         didSet {
-            system.width = Int(bounds.width)
-            system.height = Int(bounds.height)
+            resetSimulation()
         }
     }
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
-        // Set the size
-        system.width = Int(bounds.width)
-        system.height = Int(bounds.height)
-        
-        // Fill the center
+        // Reset the simulation
+        resetSimulation()
+        system.outlineEdges = false
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func resetSimulation() {
+        // Clear the simulation
+        system.width = Int(bounds.width)
+        system.height = Int(bounds.height)
+        system.clearSamples()
+    
+        setNeedsDisplay()
     }
     
     // MARK: Drawing

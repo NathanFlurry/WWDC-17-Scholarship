@@ -75,9 +75,9 @@ let classificationToPolyCorners = [
 // Used at each point
 public class GridSample {
     // What the value is
-    var sample: CGFloat = 0
-    var aboveThreshold: Bool = false
-    var classification: Int = 0
+    public var sample: CGFloat = 0
+    public var aboveThreshold: Bool = false
+    public var classification: Int = 0
 }
 
 public class MarchingSquaresEngine2D {
@@ -103,6 +103,9 @@ public class MarchingSquaresEngine2D {
             generateGrid()
         }
     }
+    
+    // If the edges should be outlined to fill the path properly.
+    public var outlineEdges = true
     
     // Columns and rows include resolution; add 1 so it goes to the edge; add
     // 2 so the ouside border encapsulates the borders
@@ -144,6 +147,14 @@ public class MarchingSquaresEngine2D {
         samples.removeSubrange(itemCount..<samples.count)
     }
     
+    // Clears the grid
+    public func clearSamples() {
+        for sample in samples {
+            sample.sample = 0
+            sample.aboveThreshold = false
+        }
+    }
+    
     // Calculates the values in the grid
     public func calculateSamples() {
         // Calculate if over the threashold
@@ -153,7 +164,7 @@ public class MarchingSquaresEngine2D {
             
             // Set to above threshold if an edge
             let index = columnAndRow(forIndex: i)
-            if index.row == 0 || index.row == rows - 1 || index.col == 0 || index.col == cols - 1 {
+            if outlineEdges && (index.row == 0 || index.row == rows - 1 || index.col == 0 || index.col == cols - 1) {
                 sample.sample = threshold
                 sample.aboveThreshold = true
             }

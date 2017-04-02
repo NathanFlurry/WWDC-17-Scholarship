@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 // Create a view
 let view = MetaballViewMovable2D(frame: simulationSize)
 view.drawBlock = { view, context in
