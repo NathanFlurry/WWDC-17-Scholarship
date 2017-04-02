@@ -318,13 +318,13 @@ public class MarchingSquaresEngine2D {
             // Get the line to use and create a group
             var line = lines.remove(at: 0)
             var firstItem = true
-            var startPosition: CGPoint? // The point the path started from; used to determine if a closed path.
+//            var startPosition: CGPoint? // The point the path started from; used to determine if a closed path.
             
             // Find all associated items
             while let (index, from, joint, to) = findMatching(line: line, in: lines) {
                 // If at first line, draw first line
                 if firstItem {
-                    startPosition = from
+//                    startPosition = from
                     path.move(to: from)
                     path.addLine(to: joint)
                     firstItem = false
@@ -339,7 +339,7 @@ public class MarchingSquaresEngine2D {
             }
             
             // Get the finishing point before closing
-            let finishPosition = path.currentPoint
+//            let finishPosition = path.currentPoint
             
             // Determine if the path was closed; print it and add an indicator
 //            let shapeRect = CGRect(x: finishPosition.x - 5, y: finishPosition.y - 5, width: 10, height: 10)
