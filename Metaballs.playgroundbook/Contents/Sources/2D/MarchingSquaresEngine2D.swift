@@ -98,7 +98,7 @@ public class MarchingSquaresEngine2D {
             generateGrid()
         }
     }
-    public var height: Int = 100 {
+    public var height: Int = 100{
         didSet {
             generateGrid()
         }
@@ -157,7 +157,7 @@ public class MarchingSquaresEngine2D {
     public func calculateClassifications() {
         // Classify the samples
         for (i, sample) in samples.enumerated() {
-            let (row, col) = columnAndRow(forIndex: i)
+            let (col, row) = columnAndRow(forIndex: i)
             
             // Make sure not at the outer edge; this looks at other items, so it shouldn't look at the outer edge
             guard col != cols - 1 && row != rows - 1 else { continue }
@@ -182,7 +182,7 @@ public class MarchingSquaresEngine2D {
     public func calculateLines() -> [PointPair] {
         var lines = [PointPair]()
         for (i, sample) in samples.enumerated() {
-            let (row, col) = columnAndRow(forIndex: i)
+            let (col, row) = columnAndRow(forIndex: i)
             
             // Make sure not at the outer edge; looks beyond the edge if it does
             guard col != cols - 1 && row != rows - 1 else { continue }
@@ -380,15 +380,15 @@ public class MarchingSquaresEngine2D {
     
     // Get the column and row for index
     public func columnAndRow(forIndex i: Int) -> Index {
-        return (i / cols, i % cols)
+        return (i % rows, i / rows)
     }
     
     // Get the point for an index
     public func point(forIndex i: Int) -> CGPoint {
-        let (row, col) = columnAndRow(forIndex: i)
+        let (col, row) = columnAndRow(forIndex: i)
         return CGPoint(
-            x: CGFloat(col) / resolution,
-            y: CGFloat(row) / resolution
+            x: CGFloat(row) / resolution,
+            y: CGFloat(col) / resolution
         )
     }
 }

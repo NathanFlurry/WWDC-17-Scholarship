@@ -6,22 +6,13 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
     public let system: MetaballSystem2D = MetaballSystem2D()
     public var drawBlock: DrawBlock?
     
-    override public var bounds: CGRect {
-        didSet {
-            system.width = Int(bounds.width)
-            system.height = Int(bounds.height)
-        }
-    }
-    
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
+    // MARK: View lifecycle
+    override public func layoutSubviews() {
+        super.layoutSubviews()
         
+        // Set the size of the system
         system.width = Int(bounds.width)
         system.height = Int(bounds.height)
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: Drawing
