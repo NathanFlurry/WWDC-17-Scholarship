@@ -40,6 +40,7 @@ class LoadingController {
             ballCount = count + 1
         }
         system.generateMetaballs(count: ballCount, minSize: ballSize, maxSize: ballSize)
+        system.balls.last?.radius *= 0.75
         
         // Link into the render loop
         let displayLink = CADisplayLink(target: self, selector: #selector(step))
@@ -49,7 +50,7 @@ class LoadingController {
     
     @objc func step(link: CADisplayLink) {
         // Get the moving ball
-        var movingBall = system.balls.last!
+        let movingBall = system.balls.last!
         
         // Get the center position
         let center = CGPoint(x: CGFloat(system.width) / 2, y: CGFloat(system.height) / 2)
@@ -103,8 +104,8 @@ class LoadingController {
 // Set it up
 let controller = LoadingController(
     system: system,
-//    style: .linear(count: 3, radius: 60),
-    style: .circular(count: 3, radius: 40),
+    style: .linear(count: 3, spacing: 60),
+//    style: .circular(count: 3, radius: 40),
     ballSize: 15,
     speed: 2.5
 )
