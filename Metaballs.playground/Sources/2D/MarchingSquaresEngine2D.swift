@@ -321,22 +321,78 @@ public class MarchingSquaresEngine2D {
             // Get the finishing point before closing
             let finishPosition = path.currentPoint
             
-            // Close the subpath
-            //            path.closeSubpath()
-            
             // Determine if the path was closed; print it and add an indicator
             let shapeRect = CGRect(x: finishPosition.x - 5, y: finishPosition.y - 5, width: 10, height: 10)
             if startPosition == finishPosition {
-                print("Closed path")
+//                print("Closed path")
                 // Add point indicating where it ended
-                path.addEllipse(in: shapeRect)
+//                path.addEllipse(in: shapeRect)
             } else {
-                print("Open path")
+//                print("Open path")
                 // path.addRect(shapeRect)
+                
+                // Do initial test for point above threshold
+                finishi
+                var clockwise = true
+                var testIndex =
             }
         }
         
         return path
+    }
+    
+    func stepIndex(index: Index, clockwise: Bool) -> Index {
+        // Find the side
+        let isTop = index.row == 0
+        let isBottom = index.row == rows - 1
+        let isLeft = index.col == 0
+        let isRight = index.col == cols - 1
+        
+        // Assure the index is in the right position
+        if !(isTop || isBottom) || !(isLeft || isRight) {
+            print("Index is not touching edge to step", index)
+        }
+        
+        // Step the index
+        if clockwise {
+            if isTop && isLeft { // Corners
+                return (0, 1)
+            } else if isTop && isRight {
+                return (1, cols - 1)
+            } else if isRight && isBottom {
+                return (rows - 1, cols - 2)
+            } else if isBottom && isLeft {
+                return (rows - 2, 0)
+            } else if isTop { // Sides
+                return (0, index.col + 1)
+            } else if isRight {
+                return (index.row + 1, cols - 1)
+            } else if isBottom {
+                return (rows - 1, index.col - 1)
+            } else if isLeft {
+                return (index.row - 1, 0)
+            }
+        } else {
+            if isTop && isLeft { // Corners
+                return (1, 0)
+            } else if isTop && isRight {
+                return (0, cols - 2)
+            } else if isRight && isBottom {
+                return (rows - 2, cols - 1)
+            } else if isBottom && isLeft {
+                return (rows - 1, 1)
+            } else if isTop { // Sides
+                return (0, index.col - 1)
+            } else if isRight {
+                return (index.row - 1, cols - 1)
+            } else if isBottom {
+                return (rows - 1, index.col + 1)
+            } else if isLeft {
+                return (index.row + 1, 0)
+            }
+        }
+        
+        fatalError("Every case should be covered.")
     }
     
     // Given a pair of points, it finds another line that's attached to the same point; it returns the index of the
