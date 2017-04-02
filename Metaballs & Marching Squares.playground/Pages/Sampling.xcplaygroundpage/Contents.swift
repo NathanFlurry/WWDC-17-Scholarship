@@ -8,9 +8,10 @@
 
 import UIKit
 
+
 // Create a view
-var view = MetaballView2D.generate(downsample: 16, threshold: 1) { view, context in
-    
+let view = MetaballViewMovable2D(frame: simulationSize)
+view.drawBlock = { view, context in
     UIColor.white.setFill()
     view.drawGrid(context: context, padding: 1, useAlpha: true)
     
@@ -21,3 +22,11 @@ var view = MetaballView2D.generate(downsample: 16, threshold: 1) { view, context
     UIColor.red.setStroke()
     view.drawCircles(context: context)
 }
+
+// Set up the system
+let system = view.system
+system.resolution = 1 / 16
+system.generateMetaballs(count: 6, minSize: 30, maxSize: 40)
+
+// Present the view
+present(view: view)

@@ -13,8 +13,11 @@ public class MarchingSquaresView2D: UIView {
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
+        // Set the size
         system.width = Int(bounds.width)
         system.height = Int(bounds.height)
+        
+        // Fill the center
     }
     
     required public init?(coder aDecoder: NSCoder) {
