@@ -4,12 +4,8 @@ import UIKit
 
 // Defines types of loaders
 enum LoadingStyle {
-    case linear(count: Int, spacing: CGFloat), circular(count: Int, radius: CGFloat) //, dual(distance: CGFloat)
+    case linear(count: Int, spacing: CGFloat), circular(count: Int, radius: CGFloat)
 }
-
-
-// Define the loading style
-let loadingStyle = LoadingStyle.linear(count: 3, spacing: 30)
 
 // Create a view
 let view = MetaballView2D(frame: simulationSize)
@@ -80,7 +76,23 @@ class LoadingController {
                     y: center.y
                 )
         case .circular(let count, let radius):
-            break
+            // Place static balls
+            for i in 0..<count {
+                var angle = CGFloat(i) / CGFloat(count) * CGFloat.pi * 2
+                angle -= CGFloat.pi / 2 // Center the top ball
+                system.balls[i].position =
+                    CGPoint(
+                        x: cos(angle) * radius + center.x,
+                        y: sin(angle) * radius + center.y
+                    )
+            }
+            
+            // Place the moving ball
+            movingBall.position =
+                CGPoint(
+                    x: center.x + CGFloat(cos(link.timestamp * speed)) * radius,
+                    y: center.y + CGFloat(sin(link.timestamp * speed)) * radius
+            )
         }
         
         // Re-render it
@@ -91,7 +103,8 @@ class LoadingController {
 // Set it up
 let controller = LoadingController(
     system: system,
-    style: .linear(count: 3, spacing: 60),
+//    style: .linear(count: 3, radius: 60),
+    style: .circular(count: 3, radius: 40),
     ballSize: 15,
     speed: 2.5
 )
