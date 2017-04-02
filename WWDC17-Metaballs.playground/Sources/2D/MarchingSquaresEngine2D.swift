@@ -104,12 +104,12 @@ public class MarchingSquaresEngine2D {
         }
     }
     
-    // Columns and rows include resolution
+    // Columns and rows include resolution; add 1 so it goes to the edge
     public var cols: Int {
-        return Int(CGFloat(width) * resolution)
+        return Int(CGFloat(width) * resolution) + 1
     }
     public var rows: Int {
-        return Int(CGFloat(height) * resolution)
+        return Int(CGFloat(height) * resolution) + 1
     }
     
     // At what point to cut off
@@ -185,7 +185,7 @@ public class MarchingSquaresEngine2D {
             let (row, col) = columnAndRow(forIndex: i)
             
             // Make sure not at the outer edge; looks beyond the edge if it does
-            guard col != cols - 1 && row != rows - 1 else { continue }
+            guard col < cols - 1 && row < rows - 1 else { continue }
             
             // Get the classification and corners
             let classification = sample.classification
@@ -207,10 +207,10 @@ public class MarchingSquaresEngine2D {
             let cgRow = CGFloat(row)
             let cgCol = CGFloat(col)
             var compassCoords = [
-                "N": CGPoint(x: cgRow,     y: cgCol + N),
-                "W": CGPoint(x: cgRow + W, y: cgCol    ),
-                "E": CGPoint(x: cgRow + E, y: cgCol + 1),
-                "S": CGPoint(x: cgRow + 1, y: cgCol + S)
+                "N": CGPoint(x: cgCol + N, y: cgRow),
+                "W": CGPoint(x: cgCol,     y: cgRow + W),
+                "E": CGPoint(x: cgCol + 1, y: cgRow + E),
+                "S": CGPoint(x: cgCol + S, y: cgRow + 1)
             ]
             
             // Scale down the points by the resolution
