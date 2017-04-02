@@ -301,6 +301,7 @@ public class MarchingSquaresEngine2D {
             var startPosition: CGPoint? // The point the path started from; used to determine if a closed path.
             
             // Find all associated items
+            var lastIndex = -1
             while let (index, from, joint, to) = findMatching(line: line, in: lines) {
                 // If at first line, draw first line
                 if firstItem {
@@ -316,6 +317,9 @@ public class MarchingSquaresEngine2D {
                 // Remove the line and save it for next time
                 let other = lines.remove(at: index)
                 line = other
+                
+                // Save the last index to test
+                lastIndex = index
             }
             
             // Get the finishing point before closing
@@ -331,9 +335,16 @@ public class MarchingSquaresEngine2D {
 //                print("Open path")
                 // path.addRect(shapeRect)
                 
+                // Get the actual index
+                let index = columnAndRow(forIndex: lastIndex)
+                guard (index.row == 0 || index.row == rows - 1) && (index.col == 0 || index.col == cols - 1) else {
+                    print("Dangling line not on edge.", index)
+                    continue
+                }
+                
                 // Do initial test for point above threshold
-                finishi
-                var clockwise = true
+                let clockwiseTest = sampleAt(index: stepIndex(index: index, clockwise: true))
+                var clockwise = clockwise
                 var testIndex =
             }
         }
