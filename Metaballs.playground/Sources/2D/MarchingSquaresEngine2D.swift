@@ -301,8 +301,8 @@ public class MarchingSquaresEngine2D {
             var startPosition: CGPoint? // The point the path started from; used to determine if a closed path.
             
             // Find all associated items
-            var lastIndex = -1
-            while let (index, from, joint, to) = findMatching(line: line, in: lines) {
+            var danglingPoint: CGPoint?
+            while let (index, from, joint, to) = findMatching(line: line, in: lines, start: startPosition) {
                 // If at first line, draw first line
                 if firstItem {
                     startPosition = from
@@ -318,8 +318,8 @@ public class MarchingSquaresEngine2D {
                 let other = lines.remove(at: index)
                 line = other
                 
-                // Save the last index to test
-                lastIndex = index
+                // Save the last point
+                danglingPoint = to
             }
             
             // Get the finishing point before closing
@@ -333,19 +333,27 @@ public class MarchingSquaresEngine2D {
 //                path.addEllipse(in: shapeRect)
             } else {
 //                print("Open path")
-                // path.addRect(shapeRect)
+                 path.addRect(shapeRect)
                 
                 // Get the actual index
-                let index = columnAndRow(forIndex: lastIndex)
-                guard (index.row == 0 || index.row == rows - 1) && (index.col == 0 || index.col == cols - 1) else {
-                    print("Dangling line not on edge.", index)
+                guard let danglingPoint = danglingPoint else {
+                    print("No dangling point for open path.")
+                    continue
+                }
+                
+                // Make sure the point is not on an edge
+                guard
+                    danglingPoint.x == 0 || danglingPoint.x == CGFloat(width) ||
+                    danglingPoint.y == 0 || danglingPoint.y == CGFloat(height)
+                else {
+                    print("Dangling point not on edge.", danglingPoint)
                     continue
                 }
                 
                 // Do initial test for point above threshold
-                let clockwiseTest = sampleAt(index: stepIndex(index: index, clockwise: true))
-                var clockwise = clockwise
-                var testIndex =
+//                let clockwiseTest = sampleAt(index: stepIndex(index: index, clockwise: true))
+//                var clockwise = clockwise
+//                var testIndex =
             }
         }
         
@@ -409,7 +417,13 @@ public class MarchingSquaresEngine2D {
     // Given a pair of points, it finds another line that's attached to the same point; it returns the index of the
     // other line, the dangling end of the given line, the point at which the two lines intersect, and the dangling point
     // of the other line.
-    private func findMatching(line: PointPair, in lines: [PointPair]) -> (index: Int, from: CGPoint, joint: CGPoint, to: CGPoint)? {
+    private func findMatching(line: PointPair, in lines: [PointPair], start: CGPoint?) -> (index: Int, from: CGPoint, joint: CGPoint, to: CGPoint)? {
+        // Check if path closed
+        if line.a == start || line.b == start {
+            return nil
+        }
+        
+        // Find exact matches
         for (i, other) in lines.enumerated() {
             if line.a == other.a {
                 return (i, line.b, other.a, other.b)
@@ -421,21 +435,54 @@ public class MarchingSquaresEngine2D {
                 return (i, line.a, other.b, other.a)
             }
             
-            let t: CGFloat = 0.2
-            if
-                distance(a: line.a, b: other.a) < t ||
-                    distance(a: line.a, b: other.b) < t ||
-                    distance(a: line.b, b: other.a) < t ||
-                    distance(a: line.b, b: other.b) < t
-            {
-                print("Found close but not the same. \(line) \(other)")
+//            let t: CGFloat = 0.2
+//            if
+//                distance(a: line.a, b: other.a) < t ||
+//                    distance(a: line.a, b: other.b) < t ||
+//                    distance(a: line.b, b: other.a) < t ||
+//                    distance(a: line.b, b: other.b) < t
+//            {
+//                print("Found close but not the same. \(line) \(other)")
+//            }
+        }
+        
+        // Find the side that's on the edge
+        let dangling: CGPoint
+        if onEdge(line.a) {
+            dangling = line.a
+        } else if onEdge(line.b) {
+            dangling = line.b
+        } else {
+            print("No dangling line on the edge.", line)
+            return nil
+        }
+        
+        // Look for matches on the same edge
+        if dangling.x == 0 || dangling.x == CGFloat(width) {
+            for other in lines {
+                if other.a.x == dangling.x || other.b.x == dangling.x {
+                    print("Found matching on edge X")
+                }
             }
         }
+        if dangling.y == 0 || dangling.y == CGFloat(height) {
+            for other in lines {
+                if other.a.y == dangling.y || other.b.y == dangling.y {
+                    print("Found matching on edge Y")
+                }
+            }
+        }
+        
+        
         return nil
     }
     
     private func distance(a: CGPoint, b: CGPoint) -> CGFloat {
         return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2))
+    }
+    
+    private func onEdge(_ point: CGPoint) -> Bool {
+        return point.x == 0 || point.x == CGFloat(width) || point.y == 0 || point.y == CGFloat(height)
     }
     
     // Get a sample at an index
