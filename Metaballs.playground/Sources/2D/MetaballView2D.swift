@@ -119,8 +119,7 @@ public class MetaballView2D: UIView { // TODO: Be able to configure colors
     public func drawCellsPath(context: CGContext) {
         let path = system.renderPath()
         context.addPath(path)
-        context.fillPath()
-        context.strokePath()
+        context.fillPath(using: CGPathFillRule.evenOdd)
     }
     
     // MARK: Interaction

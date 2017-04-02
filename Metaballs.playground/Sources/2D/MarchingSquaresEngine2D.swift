@@ -104,12 +104,13 @@ public class MarchingSquaresEngine2D {
         }
     }
     
-    // Columns and rows include resolution; add 1 so it goes to the edge
+    // Columns and rows include resolution; add 1 so it goes to the edge; add
+    // 2 so the ouside border encapsulates the borders
     public var cols: Int {
-        return Int(CGFloat(width) * resolution) + 1
+        return Int(CGFloat(width) * resolution) + 1 + 2
     }
     public var rows: Int {
-        return Int(CGFloat(height) * resolution) + 1
+        return Int(CGFloat(height) * resolution) + 1 + 2
     }
     
     // At what point to cut off
@@ -146,8 +147,16 @@ public class MarchingSquaresEngine2D {
     // Calculates the values in the grid
     public func calculateSamples() {
         // Calculate if over the threashold
-        for sample in samples {
+        for (i, sample) in samples.enumerated() {
+            // Set above threshold
             sample.aboveThreshold = sample.sample >= threshold
+            
+            // Set to above threshold if an edge
+            let index = columnAndRow(forIndex: i)
+            if index.row == 0 || index.row == rows - 1 || index.col == 0 || index.col == cols - 1 {
+                sample.sample = threshold
+                sample.aboveThreshold = true
+            }
         }
     }
     
@@ -202,8 +211,8 @@ public class MarchingSquaresEngine2D {
             let W = (classification & 1) == (classification & 8) ? 0.5 : CGFloat.lerp(NW, SW, 0, 1, threshold)
             
             // Construct the points
-            let cgRow = CGFloat(row)
-            let cgCol = CGFloat(col)
+            let cgRow = CGFloat(row - 1)
+            let cgCol = CGFloat(col - 1)
             var compassCoords = [
                 "N": CGPoint(x: cgCol + N, y: cgRow),
                 "W": CGPoint(x: cgCol,     y: cgRow + W),
@@ -301,8 +310,7 @@ public class MarchingSquaresEngine2D {
             var startPosition: CGPoint? // The point the path started from; used to determine if a closed path.
             
             // Find all associated items
-            var danglingPoint: CGPoint?
-            while let (index, from, joint, to) = findMatching(line: line, in: lines, start: startPosition) {
+            while let (index, from, joint, to) = findMatching(line: line, in: lines) {
                 // If at first line, draw first line
                 if firstItem {
                     startPosition = from
@@ -317,9 +325,6 @@ public class MarchingSquaresEngine2D {
                 // Remove the line and save it for next time
                 let other = lines.remove(at: index)
                 line = other
-                
-                // Save the last point
-                danglingPoint = to
             }
             
             // Get the finishing point before closing
@@ -332,97 +337,18 @@ public class MarchingSquaresEngine2D {
                 // Add point indicating where it ended
 //                path.addEllipse(in: shapeRect)
             } else {
-//                print("Open path")
-                 path.addRect(shapeRect)
-                
-                // Get the actual index
-                guard let danglingPoint = danglingPoint else {
-                    print("No dangling point for open path.")
-                    continue
-                }
-                
-                // Make sure the point is not on an edge
-                guard
-                    danglingPoint.x == 0 || danglingPoint.x == CGFloat(width) ||
-                    danglingPoint.y == 0 || danglingPoint.y == CGFloat(height)
-                else {
-                    print("Dangling point not on edge.", danglingPoint)
-                    continue
-                }
-                
-                // Do initial test for point above threshold
-//                let clockwiseTest = sampleAt(index: stepIndex(index: index, clockwise: true))
-//                var clockwise = clockwise
-//                var testIndex =
+                print("Open path")
+//                 path.addRect(shapeRect)
             }
         }
         
         return path
     }
     
-    func stepIndex(index: Index, clockwise: Bool) -> Index {
-        // Find the side
-        let isTop = index.row == 0
-        let isBottom = index.row == rows - 1
-        let isLeft = index.col == 0
-        let isRight = index.col == cols - 1
-        
-        // Assure the index is in the right position
-        if !(isTop || isBottom) || !(isLeft || isRight) {
-            print("Index is not touching edge to step", index)
-        }
-        
-        // Step the index
-        if clockwise {
-            if isTop && isLeft { // Corners
-                return (0, 1)
-            } else if isTop && isRight {
-                return (1, cols - 1)
-            } else if isRight && isBottom {
-                return (rows - 1, cols - 2)
-            } else if isBottom && isLeft {
-                return (rows - 2, 0)
-            } else if isTop { // Sides
-                return (0, index.col + 1)
-            } else if isRight {
-                return (index.row + 1, cols - 1)
-            } else if isBottom {
-                return (rows - 1, index.col - 1)
-            } else if isLeft {
-                return (index.row - 1, 0)
-            }
-        } else {
-            if isTop && isLeft { // Corners
-                return (1, 0)
-            } else if isTop && isRight {
-                return (0, cols - 2)
-            } else if isRight && isBottom {
-                return (rows - 2, cols - 1)
-            } else if isBottom && isLeft {
-                return (rows - 1, 1)
-            } else if isTop { // Sides
-                return (0, index.col - 1)
-            } else if isRight {
-                return (index.row - 1, cols - 1)
-            } else if isBottom {
-                return (rows - 1, index.col + 1)
-            } else if isLeft {
-                return (index.row + 1, 0)
-            }
-        }
-        
-        fatalError("Every case should be covered.")
-    }
-    
     // Given a pair of points, it finds another line that's attached to the same point; it returns the index of the
     // other line, the dangling end of the given line, the point at which the two lines intersect, and the dangling point
     // of the other line.
-    private func findMatching(line: PointPair, in lines: [PointPair], start: CGPoint?) -> (index: Int, from: CGPoint, joint: CGPoint, to: CGPoint)? {
-        // Check if path closed
-        if line.a == start || line.b == start {
-            return nil
-        }
-        
+    private func findMatching(line: PointPair, in lines: [PointPair]) -> (index: Int, from: CGPoint, joint: CGPoint, to: CGPoint)? {
         // Find exact matches
         for (i, other) in lines.enumerated() {
             if line.a == other.a {
@@ -446,43 +372,11 @@ public class MarchingSquaresEngine2D {
 //            }
         }
         
-        // Find the side that's on the edge
-        let dangling: CGPoint
-        if onEdge(line.a) {
-            dangling = line.a
-        } else if onEdge(line.b) {
-            dangling = line.b
-        } else {
-            print("No dangling line on the edge.", line)
-            return nil
-        }
-        
-        // Look for matches on the same edge
-        if dangling.x == 0 || dangling.x == CGFloat(width) {
-            for other in lines {
-                if other.a.x == dangling.x || other.b.x == dangling.x {
-                    print("Found matching on edge X")
-                }
-            }
-        }
-        if dangling.y == 0 || dangling.y == CGFloat(height) {
-            for other in lines {
-                if other.a.y == dangling.y || other.b.y == dangling.y {
-                    print("Found matching on edge Y")
-                }
-            }
-        }
-        
-        
         return nil
     }
     
     private func distance(a: CGPoint, b: CGPoint) -> CGFloat {
         return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2))
-    }
-    
-    private func onEdge(_ point: CGPoint) -> Bool {
-        return point.x == 0 || point.x == CGFloat(width) || point.y == 0 || point.y == CGFloat(height)
     }
     
     // Get a sample at an index
@@ -503,8 +397,8 @@ public class MarchingSquaresEngine2D {
     public func point(forIndex i: Int) -> CGPoint {
         let (row, col) = columnAndRow(forIndex: i)
         return CGPoint(
-            x: CGFloat(col) / resolution,
-            y: CGFloat(row) / resolution
+            x: CGFloat(col - 1) / resolution,
+            y: CGFloat(row - 1) / resolution
         )
     }
 }
