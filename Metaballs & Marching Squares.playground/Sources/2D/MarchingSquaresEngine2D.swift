@@ -122,11 +122,11 @@ public class MarchingSquaresEngine2D {
     // State
     public private(set) var samples: [GridSample] = []
     
-    init() {
+    public init() {
         generateGrid()
     }
     
-    func renderPath() -> CGPath {
+    public func renderPath() -> CGPath {
         // Do calculations
         let lines = calculateLines()
         
@@ -342,16 +342,19 @@ public class MarchingSquaresEngine2D {
             let finishPosition = path.currentPoint
             
             // Determine if the path was closed; print it and add an indicator
-            let shapeRect = CGRect(x: finishPosition.x - 5, y: finishPosition.y - 5, width: 10, height: 10)
-            if startPosition == finishPosition {
+//            let shapeRect = CGRect(x: finishPosition.x - 5, y: finishPosition.y - 5, width: 10, height: 10)
+//            if startPosition == finishPosition {
 //                print("Closed path")
                 // Add point indicating where it ended
 //                path.addEllipse(in: shapeRect)
-            } else {
-                print("Open path")
+//            } else {
+//                print("Open path")
 //                 path.addRect(shapeRect)
-            }
+//            }
         }
+        
+        // Add an extra square around all of it to flip the even-odd
+        path.addRect(CGRect(x: -1 / resolution, y: -1 / resolution, width: CGFloat(width) + 1 / resolution, height: CGFloat(height) + 1 / resolution))
         
         return path
     }
